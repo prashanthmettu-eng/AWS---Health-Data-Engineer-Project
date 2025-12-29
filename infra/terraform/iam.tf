@@ -345,7 +345,7 @@ resource "aws_iam_role" "github_actions_terraform" {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = "repo:prashanthmettu-eng/AWS---Health-Data-Engineer-Project:ref:refs/heads/main"
           }
-        }
+        }        
       }
     ]
   })
