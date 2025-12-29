@@ -366,51 +366,55 @@ resource "aws_iam_policy" "terraform_ci_policy" {
     Version = "2012-10-17"
     Statement = [
 
-      # -----------------------------
-      # Terraform State (S3)
-      # -----------------------------
+      # -------------------------
+      # Terraform backend (S3)
+      # -------------------------
       {
         Effect = "Allow"
         Action = [
+          "s3:ListBucket",
+          "s3:GetBucketPolicy",
+          "s3:GetBucketVersioning",
+          "s3:GetEncryptionConfiguration",
           "s3:GetObject",
           "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:ListBucket"
+          "s3:DeleteObject"
         ]
         Resource = [
-          "arn:aws:s3:::${var.project_name}-terraform-state",
-          "arn:aws:s3:::${var.project_name}-terraform-state/*"
+          "arn:aws:s3:::health-aws-data-engineer-project-terraform-state",
+          "arn:aws:s3:::health-aws-data-engineer-project-terraform-state/*"
         ]
       },
 
-      # -----------------------------
-      # Terraform Locking (DynamoDB)
-      # -----------------------------
+      # -------------------------
+      # Terraform state locking (DynamoDB)
+      # -------------------------
       {
         Effect = "Allow"
         Action = [
-          "dynamodb:GetItem",
           "dynamodb:PutItem",
+          "dynamodb:GetItem",
           "dynamodb:DeleteItem",
-          "dynamodb:DescribeTable"
+          "dynamodb:DescribeTable",
+          "dynamodb:DescribeContinuousBackups"
         ]
-        Resource = "arn:aws:dynamodb:${var.aws_region}:*:table/${var.project_name}-terraform-locks"
+        Resource = "arn:aws:dynamodb:us-east-1:259242132172:table/health-aws-data-engineer-project-terraform-locks"
       },
 
-      # -----------------------------
-      # Infrastructure Permissions
-      # -----------------------------
+      # -------------------------
+      # Glue, Lambda, Step Functions, EventBridge
+      # -------------------------
       {
         Effect = "Allow"
         Action = [
           "glue:*",
+          "lambda:*",
           "states:*",
           "events:*",
-          "iam:*",
           "logs:*",
           "sns:*",
-          "lambda:*",
-          "cloudwatch:*"
+          "cloudwatch:*",
+          "iam:PassRole"
         ]
         Resource = "*"
       }
