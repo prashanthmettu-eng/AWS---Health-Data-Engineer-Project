@@ -1,6 +1,7 @@
 ﻿#!/usr/bin/env python3
 """
 generate_patients.py
+generate_patients.py
 Simple synthetic patient CSV generator for the Bronze layer.
 Creates data/sample_raw/patients.csv with ~50 rows.
 """
