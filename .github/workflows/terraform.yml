@@ -34,7 +34,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::259242132172:role/AWS---Health-Data-Engineer-Project-github-actions-terraform-role
+          role-to-assume: arn:aws:iam::259242132172:role/health-aws-data-engineer-project-github-actions-terraform-role
           aws-region: us-east-1
 
       # ----------------------------
