@@ -343,12 +343,17 @@ resource "aws_iam_role" "github_actions_terraform" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:*"
+            "token.actions.githubusercontent.com:sub" = "repo:prashanthmettu-eng/AWS---Health-Data-Engineer-Project:*"
           }
         }
       }
     ]
   })
+
+  tags = {
+    Project     = var.project_name
+    Environment = var.environment
+  }
 }
 
 ############################################
