@@ -1,15 +1,15 @@
 resource "aws_s3_bucket" "code_bucket" {
-  bucket = "${var.project_name}-code-${random_id.bucket_suffix.hex}"
-  acl    = "private"
+  # IMPORTANT: use the EXISTING bucket name exactly
+  bucket = "health-aws-data-engineer-project-code-d805f87f"
 
   tags = {
-    Name        = "${var.project_name}-code"
+    Name        = "health-aws-data-engineer-project-code"
     Environment = var.environment
   }
-}
 
-resource "random_id" "bucket_suffix" {
-  byte_length = 4
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 ############################################
