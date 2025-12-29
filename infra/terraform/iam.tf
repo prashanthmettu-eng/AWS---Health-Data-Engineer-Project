@@ -343,7 +343,7 @@ resource "aws_iam_role" "github_actions_terraform" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:prashanthmettu-eng/health-aws-data-engineer-project:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:prashanthmettu-eng/AWS---Health-Data-Engineer-Project:ref:refs/heads/main"
           }
         }
       }
