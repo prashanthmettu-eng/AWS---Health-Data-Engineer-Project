@@ -365,10 +365,44 @@ resource "aws_iam_policy" "terraform_ci_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+
+      # -----------------------------
+      # Terraform State (S3)
+      # -----------------------------
       {
         Effect = "Allow"
         Action = [
-          "s3:*",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.project_name}-terraform-state",
+          "arn:aws:s3:::${var.project_name}-terraform-state/*"
+        ]
+      },
+
+      # -----------------------------
+      # Terraform Locking (DynamoDB)
+      # -----------------------------
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:DescribeTable"
+        ]
+        Resource = "arn:aws:dynamodb:${var.aws_region}:*:table/${var.project_name}-terraform-locks"
+      },
+
+      # -----------------------------
+      # Infrastructure Permissions
+      # -----------------------------
+      {
+        Effect = "Allow"
+        Action = [
           "glue:*",
           "states:*",
           "events:*",
