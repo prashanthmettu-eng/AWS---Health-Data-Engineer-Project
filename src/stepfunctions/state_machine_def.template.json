@@ -1,0 +1,541 @@
+﻿{
+  "Comment": "Healthcare Data Platform – Full Bronze → Silver → Gold Orchestration",
+  "StartAt": "BronzeToSilver",
+  "States": {
+    "BronzeToSilver": {
+      "Type": "Parallel",
+      "Branches": [
+
+        {
+          "StartAt": "B2S_Patients_Start",
+          "States": {
+            "B2S_Patients_Start": {
+              "Type": "Task",
+              "Resource": "${lambda_start_arn}",
+              "Parameters": { "jobName": "bronze-to-silver-patients-job" },
+              "ResultPath": "$.run",
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "IntervalSeconds": 10,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Next": "B2S_Patients_Wait"
+            },
+            "B2S_Patients_Wait": {
+              "Type": "Wait",
+              "Seconds": 60,
+              "Next": "B2S_Patients_Check"
+            },
+            "B2S_Patients_Check": {
+              "Type": "Task",
+              "Resource": "${lambda_check_arn}",
+              "Parameters": {
+                "jobName": "bronze-to-silver-patients-job",
+                "jobRunId.$": "$.run.jobRunId"
+              },
+              "ResultPath": "$.status",
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "IntervalSeconds": 15,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Next": "B2S_Patients_Done?"
+            },
+            "B2S_Patients_Done?": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.status.status",
+                  "StringEquals": "SUCCEEDED",
+                  "Next": "B2S_Patients_Success"
+                },
+                {
+                  "Variable": "$.status.status",
+                  "StringEquals": "FAILED",
+                  "Next": "B2S_Patients_Fail"
+                }
+              ],
+              "Default": "B2S_Patients_Wait"
+            },
+            "B2S_Patients_Fail": {
+              "Type": "Fail",
+              "Cause": "bronze-to-silver-patients failed"
+            },
+            "B2S_Patients_Success": {
+              "Type": "Succeed"
+            }
+          }
+        },
+
+        {
+          "StartAt": "B2S_Encounters_Start",
+          "States": {
+            "B2S_Encounters_Start": {
+              "Type": "Task",
+              "Resource": "${lambda_start_arn}",
+              "Parameters": { "jobName": "bronze-to-silver-encounters-job" },
+              "ResultPath": "$.run",
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "IntervalSeconds": 10,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Next": "B2S_Encounters_Wait"
+            },
+            "B2S_Encounters_Wait": {
+              "Type": "Wait",
+              "Seconds": 60,
+              "Next": "B2S_Encounters_Check"
+            },
+            "B2S_Encounters_Check": {
+              "Type": "Task",
+              "Resource": "${lambda_check_arn}",
+              "Parameters": {
+                "jobName": "bronze-to-silver-encounters-job",
+                "jobRunId.$": "$.run.jobRunId"
+              },
+              "ResultPath": "$.status",
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "IntervalSeconds": 15,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Next": "B2S_Encounters_Done?"
+            },
+            "B2S_Encounters_Done?": {
+              "Type": "Choice",
+              "Choices": [
+                { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "B2S_Encounters_Success" },
+                { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "B2S_Encounters_Fail" }
+              ],
+              "Default": "B2S_Encounters_Wait"
+            },
+            "B2S_Encounters_Fail": {
+              "Type": "Fail",
+              "Cause": "bronze-to-silver-encounters failed"
+            },
+            "B2S_Encounters_Success": {
+              "Type": "Succeed"
+            }
+          }
+        },
+
+        {
+          "StartAt": "B2S_Medications_Start",
+          "States": {
+            "B2S_Medications_Start": {
+              "Type": "Task",
+              "Resource": "${lambda_start_arn}",
+              "Parameters": { "jobName": "bronze-to-silver-medications-job" },
+              "ResultPath": "$.run",
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "IntervalSeconds": 10,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Next": "B2S_Medications_Wait"
+            },
+            "B2S_Medications_Wait": {
+              "Type": "Wait",
+              "Seconds": 60,
+              "Next": "B2S_Medications_Check"
+            },
+            "B2S_Medications_Check": {
+              "Type": "Task",
+              "Resource": "${lambda_check_arn}",
+              "Parameters": {
+                "jobName": "bronze-to-silver-medications-job",
+                "jobRunId.$": "$.run.jobRunId"
+              },
+              "ResultPath": "$.status",
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "IntervalSeconds": 15,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Next": "B2S_Medications_Done?"
+            },
+            "B2S_Medications_Done?": {
+              "Type": "Choice",
+              "Choices": [
+                { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "B2S_Medications_Success" },
+                { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "B2S_Medications_Fail" }
+              ],
+              "Default": "B2S_Medications_Wait"
+            },
+            "B2S_Medications_Fail": {
+              "Type": "Fail",
+              "Cause": "bronze-to-silver-medications failed"
+            },
+            "B2S_Medications_Success": {
+              "Type": "Succeed"
+            }
+          }
+        }
+
+      ],
+      "Catch": [
+        { "ErrorEquals": ["States.ALL"], "Next": "FailPipeline" }
+      ],
+      "ResultPath": null,
+      "Next": "SilverToGoldDimensions"
+    },
+    
+    "SilverToGoldDimensions": {
+      "Type": "Pass",
+      "Next": "StartDimPatient"
+    },
+
+    "StartDimPatient": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-dim-patient-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitDimPatient"
+    },
+
+    "WaitDimPatient": { "Type": "Wait", "Seconds": 60, "Next": "CheckDimPatient" },
+
+    "CheckDimPatient": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-dim-patient-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "DimPatientDone?"
+    },
+
+    "DimPatientDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "StartDimTime" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitDimPatient"
+    },
+
+    "StartDimTime": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-dim-time-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitDimTime"
+    },
+
+    "WaitDimTime": { "Type": "Wait", "Seconds": 60, "Next": "CheckDimTime" },
+
+    "CheckDimTime": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-dim-time-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "DimTimeDone?"
+    },
+
+    "DimTimeDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "StartDimMedication" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitDimTime"
+    },
+
+    "StartDimMedication": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-dim-medication-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitDimMedication"
+    },
+
+    "WaitDimMedication": { "Type": "Wait", "Seconds": 60, "Next": "CheckDimMedication" },
+
+    "CheckDimMedication": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-dim-medication-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "DimMedicationDone?"
+    },
+
+    "DimMedicationDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "StartDimProvider" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitDimMedication"
+    },
+
+    "StartDimProvider": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-dim-provider-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitDimProvider"
+    },
+
+    "WaitDimProvider": { "Type": "Wait", "Seconds": 60, "Next": "CheckDimProvider" },
+
+    "CheckDimProvider": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-dim-provider-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "DimProviderDone?"
+    },
+
+    "DimProviderDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "StartDimDiagnosis" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitDimProvider"
+    },
+
+    "StartDimDiagnosis": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-dim-diagnosis-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitDimDiagnosis"
+    },
+
+    "WaitDimDiagnosis": { "Type": "Wait", "Seconds": 60, "Next": "CheckDimDiagnosis" },
+
+    "CheckDimDiagnosis": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-dim-diagnosis-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "DimDiagnosisDone?"
+    },
+
+    "DimDiagnosisDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "StartFactEncounter" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitDimDiagnosis"
+    },
+
+    "StartFactEncounter": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-fact-encounter-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitFactEncounter"
+    },
+
+    "WaitFactEncounter": { "Type": "Wait", "Seconds": 60, "Next": "CheckFactEncounter" },
+
+    "CheckFactEncounter": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-fact-encounter-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "FactEncounterDone?"
+    },
+
+    "FactEncounterDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "StartFactMedication" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitFactEncounter"
+    },
+
+    "StartFactMedication": {
+      "Type": "Task",
+      "Resource": "${lambda_start_arn}",
+      "Parameters": { "jobName": "silver-to-gold-fact-medication-admin-job" },
+      "ResultPath": "$.run",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WaitFactMedication"
+    },
+
+    "WaitFactMedication": { "Type": "Wait", "Seconds": 60, "Next": "CheckFactMedication" },
+
+    "CheckFactMedication": {
+      "Type": "Task",
+      "Resource": "${lambda_check_arn}",
+      "Parameters": {
+        "jobName": "silver-to-gold-fact-medication-admin-job",
+        "jobRunId.$": "$.run.jobRunId"
+      },
+      "ResultPath": "$.status",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "IntervalSeconds": 15,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "FactMedicationDone?"
+    },
+
+    "FactMedicationDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Variable": "$.status.status", "StringEquals": "SUCCEEDED", "Next": "NotifySuccess" },
+        { "Variable": "$.status.status", "StringEquals": "FAILED", "Next": "FailPipeline" }
+      ],
+      "Default": "WaitFactMedication"
+    },
+
+    "NotifySuccess": {
+      "Type": "Task",
+      "Resource": "${lambda_success_arn}",
+      "End": true
+    },
+
+    "FailPipeline": {
+      "Type": "Task",
+      "Resource": "${lambda_failure_arn}",
+      "End": true
+    }
+  }
+}

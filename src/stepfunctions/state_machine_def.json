@@ -1,0 +1,90 @@
+﻿{
+  "Comment": "Local placeholder ASL for Bronze->Silver orchestration. Replace Lambda ARNs / SNS Topic ARNs when deploying to AWS.",
+  "StartAt": "ValidateInput",
+  "States": {
+    "ValidateInput": {
+      "Type": "Pass",
+      "Result": { "msg": "input validated (local placeholder)" },
+      "Next": "StartGlueJob"
+    },
+    "StartGlueJob": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:REGION:ACCOUNT_ID:function:start-glue-job-placeholder",
+        "Payload": {
+          "jobName": "bronze_to_silver",
+          "s3_input_path": "s3://your-bucket/bronze/patients/",
+          "s3_output_path": "s3://your-bucket/silver/patients/"
+        }
+      },
+      "Next": "WaitForJob",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "PublishFailure"
+        }
+      ]
+    },
+    "WaitForJob": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "CheckJobStatus"
+    },
+    "CheckJobStatus": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:REGION:ACCOUNT_ID:function:check-glue-job-status-placeholder",
+        "Payload": {
+          "jobRunId.$": "$.Payload.jobRunId"
+        }
+      },
+      "Next": "IsJobComplete",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "ResultPath": "$.error",
+          "Next": "PublishFailure"
+        }
+      ]
+    },
+    "IsJobComplete": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Payload.status",
+          "StringEquals": "SUCCEEDED",
+          "Next": "PublishSuccess"
+        },
+        {
+          "Variable": "$.Payload.status",
+          "StringEquals": "RUNNING",
+          "Next": "WaitForJob"
+        }
+      ],
+      "Default": "PublishFailure"
+    },
+    "PublishSuccess": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:REGION:ACCOUNT_ID:health-pipeline-success",
+        "Message.$": "States.JsonToString($.Payload)",
+        "Subject": "Health ETL Pipeline Success"
+      },
+      "End": true
+    },
+    "PublishFailure": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:REGION:ACCOUNT_ID:health-pipeline-failure",
+        "Message.$": "States.JsonToString($.error)",
+        "Subject": "Health ETL Pipeline Failure"
+      },
+      "End": true
+    }
+  }
+}

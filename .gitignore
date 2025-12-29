@@ -1,0 +1,14 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Lambda build artifacts
+infra/terraform/modules/lambda/build/
+
+# OS / Python
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
