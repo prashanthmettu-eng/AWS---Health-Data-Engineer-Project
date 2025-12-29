@@ -366,29 +366,33 @@ resource "aws_iam_policy" "terraform_ci_policy" {
     Version = "2012-10-17"
     Statement = [
 
-      # -------------------------
-      # Terraform backend (S3)
-      # -------------------------
+      #################################
+      # S3 – Terraform State + Glue Code
+      #################################
       {
         Effect = "Allow"
         Action = [
           "s3:ListBucket",
+          "s3:GetBucketAcl",
           "s3:GetBucketPolicy",
           "s3:GetBucketVersioning",
           "s3:GetEncryptionConfiguration",
           "s3:GetObject",
           "s3:PutObject",
-          "s3:DeleteObject"
+          "s3:DeleteObject",
+          "s3:HeadObject"
         ]
         Resource = [
           "arn:aws:s3:::health-aws-data-engineer-project-terraform-state",
-          "arn:aws:s3:::health-aws-data-engineer-project-terraform-state/*"
+          "arn:aws:s3:::health-aws-data-engineer-project-terraform-state/*",
+          "arn:aws:s3:::health-aws-data-engineer-project-code-d805f87f",
+          "arn:aws:s3:::health-aws-data-engineer-project-code-d805f87f/*"
         ]
       },
 
-      # -------------------------
-      # Terraform state locking (DynamoDB)
-      # -------------------------
+      #################################
+      # DynamoDB – Terraform Lock Table
+      #################################
       {
         Effect = "Allow"
         Action = [
@@ -396,14 +400,31 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "dynamodb:GetItem",
           "dynamodb:DeleteItem",
           "dynamodb:DescribeTable",
+          "dynamodb:DescribeTimeToLive",
           "dynamodb:DescribeContinuousBackups"
         ]
         Resource = "arn:aws:dynamodb:us-east-1:259242132172:table/health-aws-data-engineer-project-terraform-locks"
       },
 
-      # -------------------------
-      # Glue, Lambda, Step Functions, EventBridge
-      # -------------------------
+      #################################
+      # IAM – Read + PassRole
+      #################################
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:GetRole",
+          "iam:GetPolicy",
+          "iam:GetOpenIDConnectProvider",
+          "iam:ListAttachedRolePolicies",
+          "iam:ListRolePolicies",
+          "iam:PassRole"
+        ]
+        Resource = "*"
+      },
+
+      #################################
+      # Core Services (Glue, Lambda, SFN)
+      #################################
       {
         Effect = "Allow"
         Action = [
@@ -413,8 +434,7 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "events:*",
           "logs:*",
           "sns:*",
-          "cloudwatch:*",
-          "iam:PassRole"
+          "cloudwatch:*"
         ]
         Resource = "*"
       }
