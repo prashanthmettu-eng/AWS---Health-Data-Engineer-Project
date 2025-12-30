@@ -378,7 +378,8 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "s3:GetBucketVersioning",
           "s3:GetEncryptionConfiguration",
           "s3:GetBucketCors",
-          "s3:GetBucketWebsite",     # ✅ ADD THIS
+          "s3:GetBucketWebsite",
+          "s3:GetAccelerateConfiguration",  # ← FINAL missing one
           "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject",
