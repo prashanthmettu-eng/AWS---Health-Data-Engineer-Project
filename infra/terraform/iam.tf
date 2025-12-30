@@ -371,14 +371,17 @@ resource "aws_iam_policy" "terraform_ci_policy" {
       ############################
       {
         Effect = "Allow"
-       Action = [
+        Action = [
           "s3:ListBucket",
+
+          # Bucket-level reads Terraform always does
           "s3:GetBucket*",
+
+          # Object-level access Terraform needs
           "s3:GetObject",
+          "s3:GetObjectTagging",
           "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:HeadObject",
-          "s3:GetBucketRequestPayment"          
+          "s3:DeleteObject"
         ]
 
         Resource = [
