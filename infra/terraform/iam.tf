@@ -383,7 +383,8 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "s3:GetAccelerateConfiguration",
           "s3:GetLifecycleConfiguration",
           "s3:GetEncryptionConfiguration",
-          "s3:GetBucketVersioning",          # ✅ THIS FIXES THE CURRENT ERROR
+          "s3:GetBucketVersioning",
+          "s3:GetBucketLogging",        # ✅ THIS FIX
 
           # Object-level access
           "s3:GetObject",
