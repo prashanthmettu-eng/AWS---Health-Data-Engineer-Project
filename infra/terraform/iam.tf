@@ -381,8 +381,9 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "s3:GetBucketWebsite",
           "s3:GetBucketRequestPayment",
           "s3:GetAccelerateConfiguration",
-          "s3:GetLifecycleConfiguration",     # ✅ NEW (this error)
+          "s3:GetLifecycleConfiguration",
           "s3:GetEncryptionConfiguration",
+          "s3:GetBucketVersioning",          # ✅ THIS FIXES THE CURRENT ERROR
 
           # Object-level access
           "s3:GetObject",
