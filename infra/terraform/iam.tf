@@ -371,19 +371,14 @@ resource "aws_iam_policy" "terraform_ci_policy" {
       ############################
       {
         Effect = "Allow"
-        Action = [
+       Action = [
           "s3:ListBucket",
-          "s3:GetBucketAcl",
-          "s3:GetBucketPolicy",
-          "s3:GetBucketVersioning",
-          "s3:GetEncryptionConfiguration",
-          "s3:GetBucketCors",
-          "s3:GetBucketWebsite",
-          "s3:GetAccelerateConfiguration",  # ← FINAL missing one
+          "s3:GetBucket*",
           "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject",
-          "s3:HeadObject"
+          "s3:HeadObject",
+          "s3:GetBucketRequestPayment"          
         ]
 
         Resource = [
