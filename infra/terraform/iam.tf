@@ -374,10 +374,11 @@ resource "aws_iam_policy" "terraform_ci_policy" {
         Action = [
           "s3:ListBucket",
 
-          # Bucket-level reads Terraform always does
+          # Bucket-level reads Terraform always performs
           "s3:GetBucket*",
+          "s3:GetAccelerateConfiguration",   # ✅ REQUIRED (this was missing)
 
-          # Object-level access Terraform needs
+          # Object-level access
           "s3:GetObject",
           "s3:GetObjectTagging",
           "s3:PutObject",
