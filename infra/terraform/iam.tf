@@ -40,8 +40,8 @@ data "aws_iam_policy_document" "glue_policy" {
       "s3:DeleteObject"
     ]
     resources = [
-      aws_s3_bucket.code_bucket.arn,
-      "${aws_s3_bucket.code_bucket.arn}/*"
+      data.aws_s3_bucket.code_bucket.arn,
+      "${data.aws_s3_bucket.code_bucket.arn}/*"
     ]
   }
 
@@ -156,8 +156,8 @@ data "aws_iam_policy_document" "lambda_policy" {
       "s3:ListBucket"
     ]
     resources = [
-      aws_s3_bucket.code_bucket.arn,
-      "${aws_s3_bucket.code_bucket.arn}/*"
+      data.aws_s3_bucket.code_bucket.arn,
+      "${data.aws_s3_bucket.code_bucket.arn}/*"
     ]
   }
 

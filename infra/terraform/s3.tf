@@ -1,15 +1,9 @@
-resource "aws_s3_bucket" "code_bucket" {
-  # IMPORTANT: use the EXISTING bucket name exactly
+############################################
+# Existing Code Bucket (DATA SOURCE)
+############################################
+# Read existing code bucket (DO NOT MANAGE)
+data "aws_s3_bucket" "code_bucket" {
   bucket = "health-aws-data-engineer-project-code-d805f87f"
-
-  tags = {
-    Name        = "health-aws-data-engineer-project-code"
-    Environment = var.environment
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 ############################################

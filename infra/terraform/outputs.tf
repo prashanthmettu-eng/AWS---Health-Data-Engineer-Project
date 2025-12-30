@@ -1,6 +1,5 @@
 output "s3_code_bucket" {
-  description = "S3 bucket for job scripts"
-  value       = aws_s3_bucket.code_bucket.bucket
+  value = data.aws_s3_bucket.code_bucket.bucket
 }
 
 output "sns_success_arn" {

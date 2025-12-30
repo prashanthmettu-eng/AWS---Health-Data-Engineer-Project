@@ -1,7 +1,7 @@
 
 # Upload Silver ETL script to S3 so Glue can access it
 resource "aws_s3_object" "bronze_to_silver_patients_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket  
   key    = "glue/bronze_to_silver/patients_job.py"
   source = "${path.module}/../../src/glue_jobs/bronze_to_silver/patients_job.py"
 
@@ -22,12 +22,12 @@ resource "aws_glue_job" "bronze_to_silver_patients" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/bronze_to_silver/patients_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/bronze_to_silver/patients_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
     "--job-language"   = "python"
   }
@@ -40,7 +40,7 @@ resource "aws_glue_job" "bronze_to_silver_patients" {
 }
 
 resource "aws_s3_object" "bronze_to_silver_encounters_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/bronze_to_silver/encounters_job.py"
   source = "${path.module}/../../src/glue_jobs/bronze_to_silver/encounters_job.py"
 
@@ -60,7 +60,7 @@ resource "aws_glue_job" "bronze_to_silver_encounters" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.id}/glue/bronze_to_silver/encounters_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.id}/glue/bronze_to_silver/encounters_job.py"
     python_version  = "3"
   }
 
@@ -71,7 +71,7 @@ resource "aws_glue_job" "bronze_to_silver_encounters" {
 }
 
 resource "aws_s3_object" "bronze_to_silver_medications_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/bronze_to_silver/medications_job.py"
   source = "${path.module}/../../src/glue_jobs/bronze_to_silver/medications_job.py"
 
@@ -91,12 +91,12 @@ resource "aws_glue_job" "bronze_to_silver_medications" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/bronze_to_silver/medications_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/bronze_to_silver/medications_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
     "--job-language"   = "python"
   }
@@ -109,7 +109,7 @@ resource "aws_glue_job" "bronze_to_silver_medications" {
 
 # Upload Gold ETL script to S3 so Glue can access it
 resource "aws_s3_object" "silver_to_gold_dim_patient_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/dim_patient_job.py"
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/dim_patient_job.py"
 
@@ -129,12 +129,12 @@ resource "aws_glue_job" "silver_to_gold_dim_patient" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_patient_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_patient_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
   }
 
@@ -145,7 +145,7 @@ resource "aws_glue_job" "silver_to_gold_dim_patient" {
 }
 
 resource "aws_s3_object" "silver_to_gold_dim_time_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/dim_time_job.py"
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/dim_time_job.py"
 
@@ -164,12 +164,12 @@ resource "aws_glue_job" "silver_to_gold_dim_time" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_time_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_time_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
   }
 
@@ -180,7 +180,7 @@ resource "aws_glue_job" "silver_to_gold_dim_time" {
 }
 
 resource "aws_s3_object" "dim_medication_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/dim_medication_job.py"
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/dim_medication_job.py"
 
@@ -199,12 +199,12 @@ resource "aws_glue_job" "dim_medication" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_medication_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_medication_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
   }
 
@@ -215,7 +215,7 @@ resource "aws_glue_job" "dim_medication" {
 }
 
 resource "aws_s3_object" "silver_to_gold_dim_provider_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/dim_provider_job.py"
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/dim_provider_job.py"
   etag   = filemd5("${path.module}/../../src/glue_jobs/silver_to_gold/dim_provider_job.py")
@@ -234,12 +234,12 @@ resource "aws_glue_job" "silver_to_gold_dim_provider" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_provider_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_provider_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
     "--job-language"   = "python"
   }
@@ -251,7 +251,7 @@ resource "aws_glue_job" "silver_to_gold_dim_provider" {
 }
 
 resource "aws_s3_object" "silver_to_gold_dim_diagnosis_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/dim_diagnosis_job.py"
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/dim_diagnosis_job.py"
 
@@ -270,12 +270,12 @@ resource "aws_glue_job" "silver_to_gold_dim_diagnosis" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_diagnosis_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/dim_diagnosis_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
   }
 
@@ -290,7 +290,7 @@ resource "aws_glue_job" "silver_to_gold_dim_diagnosis" {
 ############################################
 
 resource "aws_s3_object" "silver_to_gold_fact_encounter_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/fact_encounter_job.py"
 
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/fact_encounter_job.py"
@@ -315,12 +315,12 @@ resource "aws_glue_job" "silver_to_gold_fact_encounter" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/fact_encounter_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/fact_encounter_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--enable-metrics" = "true"
     "--job-language"   = "python"
   }
@@ -334,7 +334,7 @@ resource "aws_glue_job" "silver_to_gold_fact_encounter" {
 }
 
 resource "aws_s3_object" "silver_to_gold_fact_medication_admin_script" {
-  bucket = aws_s3_bucket.code_bucket.bucket
+  bucket = data.aws_s3_bucket.code_bucket.bucket
   key    = "glue/silver_to_gold/fact_medication_admin_job.py"
   source = "${path.module}/../../src/glue_jobs/silver_to_gold/fact_medication_admin_job.py"
 
@@ -353,12 +353,12 @@ resource "aws_glue_job" "silver_to_gold_fact_medication_admin" {
 
   command {
     name            = "glueetl"
-    script_location = "s3://${aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/fact_medication_admin_job.py"
+    script_location = "s3://${data.aws_s3_bucket.code_bucket.bucket}/glue/silver_to_gold/fact_medication_admin_job.py"
     python_version  = "3"
   }
 
   default_arguments = {
-    "--TempDir"        = "s3://${aws_s3_bucket.code_bucket.bucket}/temp/"
+    "--TempDir"        = "s3://${data.aws_s3_bucket.code_bucket.bucket}/temp/"
     "--job-language"   = "python"
     "--enable-metrics" = "true"
   }
