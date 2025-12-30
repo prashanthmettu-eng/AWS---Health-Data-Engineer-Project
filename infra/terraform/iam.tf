@@ -366,9 +366,9 @@ resource "aws_iam_policy" "terraform_ci_policy" {
     Version = "2012-10-17"
     Statement = [
 
-      #################################
-      # S3 – Terraform State + Glue Code
-      #################################
+      ############################
+      # S3 – State + Glue Code
+      ############################
       {
         Effect = "Allow"
         Action = [
@@ -377,6 +377,7 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "s3:GetBucketPolicy",
           "s3:GetBucketVersioning",
           "s3:GetEncryptionConfiguration",
+          "s3:GetBucketCors",
           "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject",
@@ -390,9 +391,9 @@ resource "aws_iam_policy" "terraform_ci_policy" {
         ]
       },
 
-      #################################
-      # DynamoDB – Terraform Lock Table
-      #################################
+      ############################
+      # DynamoDB – Terraform Locks
+      ############################
       {
         Effect = "Allow"
         Action = [
@@ -401,30 +402,33 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "dynamodb:DeleteItem",
           "dynamodb:DescribeTable",
           "dynamodb:DescribeTimeToLive",
-          "dynamodb:DescribeContinuousBackups"
+          "dynamodb:DescribeContinuousBackups",
+          "dynamodb:ListTagsOfResource"
         ]
         Resource = "arn:aws:dynamodb:us-east-1:259242132172:table/health-aws-data-engineer-project-terraform-locks"
       },
 
-      #################################
-      # IAM – Read + PassRole
-      #################################
+      ############################
+      # IAM – FULL Terraform Reads
+      ############################
       {
         Effect = "Allow"
         Action = [
           "iam:GetRole",
-          "iam:GetPolicy",
-          "iam:GetOpenIDConnectProvider",
-          "iam:ListAttachedRolePolicies",
+          "iam:GetRolePolicy",
           "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:GetPolicy",
+          "iam:GetPolicyVersion",
+          "iam:GetOpenIDConnectProvider",
           "iam:PassRole"
         ]
         Resource = "*"
       },
 
-      #################################
-      # Core Services (Glue, Lambda, SFN)
-      #################################
+      ############################
+      # Core Services
+      ############################
       {
         Effect = "Allow"
         Action = [
@@ -441,6 +445,7 @@ resource "aws_iam_policy" "terraform_ci_policy" {
     ]
   })
 }
+
 
 resource "aws_iam_role_policy_attachment" "github_actions_attach" {
   role       = aws_iam_role.github_actions_terraform.name
