@@ -372,11 +372,17 @@ resource "aws_iam_policy" "terraform_ci_policy" {
       {
         Effect = "Allow"
         Action = [
+          # Bucket-level reads Terraform ALWAYS performs
           "s3:ListBucket",
-
-          # Bucket-level reads Terraform always performs
-          "s3:GetBucket*",
-          "s3:GetAccelerateConfiguration",   # ✅ REQUIRED (this was missing)
+          "s3:GetBucketLocation",
+          "s3:GetBucketPolicy",
+          "s3:GetBucketAcl",
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketRequestPayment",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetLifecycleConfiguration",     # ✅ NEW (this error)
+          "s3:GetEncryptionConfiguration",
 
           # Object-level access
           "s3:GetObject",
