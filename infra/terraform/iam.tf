@@ -372,7 +372,7 @@ resource "aws_iam_policy" "terraform_ci_policy" {
       {
         Effect = "Allow"
         Action = [
-          # Bucket-level reads Terraform ALWAYS performs
+          # ---- Bucket-level reads Terraform ALWAYS performs ----
           "s3:ListBucket",
           "s3:GetBucketLocation",
           "s3:GetBucketPolicy",
@@ -384,9 +384,10 @@ resource "aws_iam_policy" "terraform_ci_policy" {
           "s3:GetLifecycleConfiguration",
           "s3:GetEncryptionConfiguration",
           "s3:GetBucketVersioning",
-          "s3:GetBucketLogging",        # ✅ THIS FIX
+          "s3:GetBucketLogging",
+          "s3:GetReplicationConfiguration",   # ✅ FINAL FIX
 
-          # Object-level access
+          # ---- Object-level access ----
           "s3:GetObject",
           "s3:GetObjectTagging",
           "s3:PutObject",
