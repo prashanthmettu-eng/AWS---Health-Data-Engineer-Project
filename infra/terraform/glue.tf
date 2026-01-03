@@ -14,7 +14,8 @@ resource "aws_glue_job" "bronze_to_silver_patients" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -52,7 +53,8 @@ resource "aws_glue_job" "bronze_to_silver_encounters" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -83,7 +85,8 @@ resource "aws_glue_job" "bronze_to_silver_medications" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -121,7 +124,8 @@ resource "aws_glue_job" "silver_to_gold_dim_patient" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -156,7 +160,8 @@ resource "aws_glue_job" "silver_to_gold_dim_time" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -191,7 +196,8 @@ resource "aws_glue_job" "dim_medication" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -225,7 +231,8 @@ resource "aws_glue_job" "silver_to_gold_dim_provider" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -262,7 +269,8 @@ resource "aws_glue_job" "silver_to_gold_dim_diagnosis" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 3
@@ -307,7 +315,8 @@ resource "aws_glue_job" "silver_to_gold_fact_encounter" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 2
@@ -345,7 +354,8 @@ resource "aws_glue_job" "silver_to_gold_fact_medication_admin" {
   role_arn = aws_iam_role.glue_service_role.arn
 
   glue_version = "4.0"
-  max_capacity = 2
+  worker_type       = "G.1X"
+  number_of_workers = 2
 
   execution_property {
     max_concurrent_runs = 2
